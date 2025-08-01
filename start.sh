@@ -1,7 +1,9 @@
 #!/bin/bash
-# AI Financial Coach - Startup Script
+# AI Financial Coach - Startup Script for Railway
 
-echo "🚀 Starting AI Financial Coach Application"
+echo "🚀 Starting AI Financial Coach Backend API"
+cd backend
+python main.py
 
 # Start Backend
 echo "📡 Starting FastAPI Backend..."
