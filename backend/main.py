@@ -14,7 +14,7 @@ import jwt
 import hashlib
 
 # Import AI service
-from ai_service import ai_service
+from backend.ai_service import ai_service
 
 app = FastAPI(
     title="AI Financial Coach API",
