@@ -121,7 +121,7 @@ const FinanceForm = ({ onAnalysisComplete, onError, onLoadingChange }) => {
 
       console.log('Sending data to backend:', analysisData);
 
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://ai-financial-coach-backend-production.up.railway.app';
       const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: 'POST',
         headers: {
