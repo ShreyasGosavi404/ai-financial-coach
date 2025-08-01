@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "name": "ai-financial-coach-frontend",
-  "buildCommand": "npm run build",
-  "devCommand": "npm start",
-  "installCommand": "npm install",
-  "outputDirectory": "build",
+  "name": "ai-financial-coach",
+  "builds": [
+    {
+      "src": "professional-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
   "routes": [
     {
       "src": "/static/(.*)",
@@ -19,6 +24,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://your-backend-url.railway.app"
+    "REACT_APP_API_URL": "@react_app_api_url"
   }
 }
