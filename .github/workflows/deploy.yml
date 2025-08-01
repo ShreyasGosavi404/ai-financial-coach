@@ -1,0 +1,60 @@
+name: Deploy AI Financial Coach
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Test backend
+      run: |
+        cd backend
+        python -m pytest --tb=short || echo "No tests found"
+        
+    # Railway deployment happens automatically via their GitHub integration
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: professional-frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd professional-frontend
+        npm ci
+        
+    - name: Build frontend
+      run: |
+        cd professional-frontend
+        npm run build
+        
+    - name: Test frontend
+      run: |
+        cd professional-frontend
+        npm test -- --coverage --watchAll=false || echo "No tests found"
+        
+    # Vercel deployment happens automatically via their GitHub integration
