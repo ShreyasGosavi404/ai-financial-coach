@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TEST - 3D Animation</title>
+    <style>
+        body {
+            margin: 0;
+            background: linear-gradient(45deg, #1e3c72, #2a5298, #3b82f6);
+            color: white;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .spinning-box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            animation: spin 2s linear infinite;
+            margin: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        .title {
+            font-size: 3rem;
+            animation: pulse 2s ease-in-out infinite alternate;
+            text-align: center;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        
+        .particles {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: float 10s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">🚀 3D Animation Test</h1>
+    <div class="spinning-box">💰</div>
+    <div class="spinning-box">📊</div>
+    <p>If you can see this text and spinning boxes, the animations are working!</p>
+    
+    <script>
+        // Create floating particles
+        setInterval(() => {
+            const particle = document.createElement('div');
+            particle.className = 'particles';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 10000);
+        }, 500);
+        
+        console.log('✅ Animation test loaded!');
+    </script>
+</body>
+</html>

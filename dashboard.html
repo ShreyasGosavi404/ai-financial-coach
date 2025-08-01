@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI Financial Coach - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(76, 175, 80, 0.7);
+            border-radius: 50%;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: rgba(76, 175, 80, 1);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-section h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+            100% { text-shadow: 0 0 40px rgba(33, 150, 243, 0.8); }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .card h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #4CAF50;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #4CAF50;
+            transform: translateY(-3px);
+        }
+
+        /* Status Indicators */
+        .status-online {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-background" id="animatedBg"></div>
+
+    <header class="header">
+        <div class="logo">🤖 AI Financial Coach</div>
+        <div class="user-menu">
+            <span><span class="status-online"></span>AI System Online</span>
+            <button class="btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="welcome-section">
+            <h1>Welcome to Your AI Financial Dashboard</h1>
+            <p>Experience the power of advanced AI-driven financial analysis and planning</p>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="card">
+                <span class="card-icon">🤖</span>
+                <h3>AI Financial Analysis</h3>
+                <p>Get personalized financial insights powered by Google Gemini AI with multi-agent analysis covering budget optimization, savings strategies, and debt reduction.</p>
+                <button class="btn" onclick="openAnalysis()">Start AI Analysis</button>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">📊</span>
+                <h3>Smart Budget Tracking</h3>
+                <p>Track your expenses with intelligent categorization and get AI-powered recommendations for budget optimization and spending pattern analysis.</p>
+                <button class="btn" onclick="openBudget()">Manage Budget</button>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">💰</span>
+                <h3>Savings Optimizer</h3>
+                <p>Maximize your savings potential with AI-driven strategies, emergency fund planning, and automated savings recommendations.</p>
+                <button class="btn" onclick="openSavings()">Optimize Savings</button>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">📈</span>
+                <h3>Investment Insights</h3>
+                <p>Get AI-powered investment recommendations, portfolio analysis, and market insights tailored to your financial goals and risk tolerance.</p>
+                <button class="btn" onclick="openInvestments()">View Insights</button>
+            </div>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <h4>🎯 Multi-Agent AI System</h4>
+                <p>Three specialized AI agents working together: Budget Analysis, Savings Strategy, and Debt Reduction</p>
+            </div>
+            <div class="feature-card">
+                <h4>🔄 Real-time Analysis</h4>
+                <p>Instant financial analysis with smart routing between AI and rule-based systems</p>
+            </div>
+            <div class="feature-card">
+                <h4>📱 Professional Interface</h4>
+                <p>Modern, responsive design with glassmorphism UI and 3D animations</p>
+            </div>
+            <div class="feature-card">
+                <h4>⚡ Smart Fallback</h4>
+                <p>Automatic fallback to rule-based analysis if AI is unavailable</p>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Ready to Transform Your Financial Future?</h2>
+            <p>Start your AI-powered financial journey today with comprehensive analysis and personalized recommendations.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn-primary" onclick="startFullAnalysis()">🚀 Start Complete AI Analysis</a>
+                <a href="#" class="btn-secondary" onclick="openReactApp()">📊 Open Professional Dashboard</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Create animated background particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+            
+            // Random colors for particles
+            const colors = ['rgba(76, 175, 80, 0.7)', 'rgba(33, 150, 243, 0.7)', 'rgba(255, 107, 107, 0.7)'];
+            particle.style.background = colors[Math.random() * colors.length | 0];
+            
+            document.getElementById('animatedBg').appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 20000);
+        }
+
+        // Auto-create particles
+        setInterval(createParticle, 1000);
+
+        // Initial burst
+        for (let i = 0; i < 20; i++) {
+            setTimeout(createParticle, i * 100);
+        }
+
+        // Navigation functions
+        function openAnalysis() {
+            window.open('/backend/', '_blank');
+            alert('🤖 Opening AI Financial Analysis Module...\n\nThis will connect to your FastAPI backend with Google Gemini AI integration.');
+        }
+
+        function openBudget() {
+            alert('📊 Budget Tracking Module\n\nThis would open the budget management interface with AI-powered categorization.');
+        }
+
+        function openSavings() {
+            alert('💰 Savings Optimizer\n\nThis would open the savings strategy module with emergency fund planning.');
+        }
+
+        function openInvestments() {
+            alert('📈 Investment Insights\n\nThis would open the investment analysis module with portfolio recommendations.');
+        }
+
+        function startFullAnalysis() {
+            alert('🚀 Starting Complete AI Analysis...\n\nThis would launch the full multi-agent AI analysis system.');
+            window.open('/backend/', '_blank');
+        }
+
+        function openReactApp() {
+            // Try to open the React app
+            window.open('professional-frontend/build/index.html', '_blank');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Welcome animation
+        setTimeout(() => {
+            document.querySelector('.welcome-section h1').style.animation = 'titleGlow 3s ease-in-out infinite alternate';
+        }, 1000);
+
+        console.log('🎉 AI Financial Coach Dashboard Loaded Successfully!');
+    </script>
+</body>
+</html>

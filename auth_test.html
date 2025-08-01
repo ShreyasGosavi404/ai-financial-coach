@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - AI Financial Coach</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        button {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success { background: rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(244, 67, 54, 0.3); }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Authentication System Test</h1>
+        <p>Test the backend authentication integration</p>
+
+        <div class="test-section">
+            <h3>1. Backend Health Check</h3>
+            <button onclick="testBackend()">Test Backend Connection</button>
+            <div id="backend-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Login Test</h3>
+            <input type="email" id="email" placeholder="Email" value="demo@aifinance.com">
+            <input type="password" id="password" placeholder="Password" value="demo123">
+            <br>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testInvalidLogin()">Test Invalid Login</button>
+            <div id="login-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Protected Endpoint Test</h3>
+            <button onclick="testProtectedEndpoint()">Test Protected Analysis (needs login)</button>
+            <div id="protected-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Logout Test</h3>
+            <button onclick="testLogout()">Test Logout</button>
+            <div id="logout-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+
+        async function testBackend() {
+            const resultDiv = document.getElementById('backend-result');
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✅ Backend is running!</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                resultDiv.className = 'result success';
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Backend connection failed: ${error.message}</span>`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access_token;
+                    resultDiv.innerHTML = `<span class="success">✅ Login successful!</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Login failed: ${data.detail}</span>`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Login error: ${error.message}</span>`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testInvalidLogin() {
+            const resultDiv = document.getElementById('login-result');
+            
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: 'invalid@test.com', 
+                        password: 'wrongpassword' 
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✅ Invalid login correctly rejected: ${data.detail}</span>`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Invalid login should have failed!</span>`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Test error: ${error.message}</span>`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testProtectedEndpoint() {
+            const resultDiv = document.getElementById('protected-result');
+            
+            if (!authToken) {
+                resultDiv.innerHTML = `<span class="error">❌ No auth token. Please login first.</span>`;
+                resultDiv.className = 'result error';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/auth/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✅ Protected endpoint accessible!</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Protected endpoint failed: ${data.detail}</span>`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Protected endpoint error: ${error.message}</span>`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        async function testLogout() {
+            const resultDiv = document.getElementById('logout-result');
+            
+            if (!authToken) {
+                resultDiv.innerHTML = `<span class="error">❌ No auth token to logout.</span>`;
+                resultDiv.className = 'result error';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = null;
+                    resultDiv.innerHTML = `<span class="success">✅ Logout successful!</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Logout failed: ${data.detail}</span>`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Logout error: ${error.message}</span>`;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        // Auto-test backend on page load
+        window.onload = () => testBackend();
+    </script>
+</body>
+</html>

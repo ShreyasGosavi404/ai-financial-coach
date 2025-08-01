@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Financial Coach - Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background-color: #1565c0;
+        }
+        .success {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .result {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .status-connected {
+            background-color: #4caf50;
+        }
+        .status-disconnected {
+            background-color: #f44336;
+        }
+        .status-checking {
+            background-color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 AI Financial Coach - Integration Test</h1>
+    
+    <div class="container">
+        <h2>Backend Connection Status</h2>
+        <div id="connectionStatus">
+            <span class="status-indicator status-checking"></span>
+            <span id="statusText">Checking connection...</span>
+        </div>
+        <button class="test-button" onclick="checkConnection()">Check Connection</button>
+    </div>
+
+    <div class="container">
+        <h2>API Endpoint Tests</h2>
+        <button class="test-button" onclick="testHealthEndpoint()">Test Health Endpoint</button>
+        <button class="test-button" onclick="testAnalyzeEndpoint()">Test Analyze Endpoint</button>
+        <button class="test-button" onclick="testChatEndpoint()">Test Chat Endpoint</button>
+        <button class="test-button" onclick="testTestEndpoint()">Test Sample Data Endpoint</button>
+        <div id="testResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>Sample Financial Analysis</h2>
+        <button class="test-button" onclick="runSampleAnalysis()">Run Sample Analysis</button>
+        <div id="sampleResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>Frontend Integration</h2>
+        <p>Frontend should be running at: <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+        <p>Backend API docs at: <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a></p>
+        <button class="test-button" onclick="window.open('http://localhost:3000', '_blank')">Open Frontend</button>
+        <button class="test-button" onclick="window.open('http://localhost:8000/docs', '_blank')">Open API Docs</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        
+        async function checkConnection() {
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.getElementById('statusText');
+            
+            statusIndicator.className = 'status-indicator status-checking';
+            statusText.textContent = 'Checking connection...';
+            
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (response.ok) {
+                    statusIndicator.className = 'status-indicator status-connected';
+                    statusText.textContent = 'Backend connected successfully!';
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusIndicator.className = 'status-indicator status-disconnected';
+                statusText.textContent = `Backend disconnected: ${error.message}`;
+            }
+        }
+        
+        async function testHealthEndpoint() {
+            addTestResult('Testing health endpoint...');
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                addTestResult('✅ Health endpoint working', 'success');
+                addTestResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                addTestResult(`❌ Health endpoint failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAnalyzeEndpoint() {
+            addTestResult('Testing analyze endpoint...');
+            const sampleData = {
+                monthly_income: 5000,
+                dependants: 1,
+                manual_expenses: {
+                    Housing: 1500,
+                    Food: 600,
+                    Transportation: 400
+                },
+                debts: []
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sampleData)
+                });
+                const data = await response.json();
+                addTestResult('✅ Analyze endpoint working', 'success');
+                addTestResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                addTestResult(`❌ Analyze endpoint failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testChatEndpoint() {
+            addTestResult('Testing chat endpoint...');
+            try {
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: 'Hello, test message!' })
+                });
+                const data = await response.json();
+                addTestResult('✅ Chat endpoint working', 'success');
+                addTestResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                addTestResult(`❌ Chat endpoint failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testTestEndpoint() {
+            addTestResult('Testing sample data endpoint...');
+            try {
+                const response = await fetch(`${API_URL}/test`);
+                const data = await response.json();
+                addTestResult('✅ Test endpoint working', 'success');
+                addTestResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                addTestResult(`❌ Test endpoint failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runSampleAnalysis() {
+            const resultsDiv = document.getElementById('sampleResults');
+            resultsDiv.innerHTML = '<p>Running comprehensive financial analysis...</p>';
+            
+            const sampleData = {
+                monthly_income: 7500,
+                dependants: 2,
+                manual_expenses: {
+                    Housing: 2000,
+                    Food: 800,
+                    Transportation: 600,
+                    Entertainment: 400,
+                    Utilities: 300,
+                    Healthcare: 200
+                },
+                debts: [
+                    {
+                        name: 'Credit Card',
+                        amount: 5000,
+                        interest_rate: 18.5,
+                        min_payment: 150
+                    },
+                    {
+                        name: 'Car Loan',
+                        amount: 15000,
+                        interest_rate: 6.5,
+                        min_payment: 300
+                    }
+                ]
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sampleData)
+                });
+                const data = await response.json();
+                
+                let output = '✅ Sample Analysis Results:\n\n';
+                output += `📊 BUDGET ANALYSIS:\n`;
+                output += `Monthly Income: $${data.budget_analysis.monthly_income}\n`;
+                output += `Total Expenses: $${data.budget_analysis.total_expenses}\n`;
+                output += `Remaining: $${data.budget_analysis.monthly_income - data.budget_analysis.total_expenses}\n\n`;
+                
+                output += `💰 SPENDING CATEGORIES:\n`;
+                data.budget_analysis.spending_categories.forEach(cat => {
+                    output += `${cat.category}: $${cat.amount} (${cat.percentage.toFixed(1)}%)\n`;
+                });
+                
+                output += `\n🎯 SAVINGS STRATEGY:\n`;
+                output += `Emergency Fund Recommended: $${data.savings_strategy.emergency_fund.recommended_amount}\n`;
+                data.savings_strategy.recommendations.forEach(rec => {
+                    output += `${rec.category}: $${rec.amount} - ${rec.rationale}\n`;
+                });
+                
+                if (data.debt_reduction.total_debt > 0) {
+                    output += `\n🏦 DEBT REDUCTION:\n`;
+                    output += `Total Debt: $${data.debt_reduction.total_debt}\n`;
+                    output += `Avalanche Method: ${data.debt_reduction.payoff_plans.avalanche.months_to_payoff} months\n`;
+                    output += `Snowball Method: ${data.debt_reduction.payoff_plans.snowball.months_to_payoff} months\n`;
+                }
+                
+                resultsDiv.innerHTML = `<div class="result">${output}</div>`;
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="result error">❌ Analysis failed: ${error.message}</div>`;
+            }
+        }
+        
+        function addTestResult(message, type = '') {
+            const resultsDiv = document.getElementById('testResults');
+            const resultElement = document.createElement('div');
+            resultElement.className = `result ${type}`;
+            resultElement.textContent = message;
+            resultsDiv.appendChild(resultElement);
+        }
+        
+        // Check connection on page load
+        window.onload = function() {
+            checkConnection();
+        };
+    </script>
+</body>
+</html>

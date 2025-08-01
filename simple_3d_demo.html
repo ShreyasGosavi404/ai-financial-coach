@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 AI Financial Coach - 3D Animation Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+        }
+
+        /* Animated Background */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                #1e3c72 0%, 
+                #2a5298 25%, 
+                #3b82f6 50%, 
+                #6366f1 75%, 
+                #8b5cf6 100%
+            );
+            z-index: -1;
+            animation: backgroundShift 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundShift {
+            0% { 
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3b82f6 100%);
+            }
+            100% { 
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: float 15s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* 3D Cubes */
+        .cube {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            animation: rotateCube 8s linear infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #60a5fa;
+            backdrop-filter: blur(5px);
+        }
+
+        .cube-face.front  { transform: rotateY(0deg) translateZ(30px); }
+        .cube-face.back   { transform: rotateY(180deg) translateZ(30px); }
+        .cube-face.right  { transform: rotateY(90deg) translateZ(30px); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(30px); }
+        .cube-face.top    { transform: rotateX(90deg) translateZ(30px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .cube1 {
+            top: 20%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .cube2 {
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        /* Floating Coins */
+        .coin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            border-radius: 50%;
+            border: 2px solid #fcd34d;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+            animation: floatCoin 12s linear infinite;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #92400e;
+            font-weight: bold;
+        }
+
+        @keyframes floatCoin {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Content */
+        .content {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: titlePulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titlePulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 20px;
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .btn {
+            background: rgba(59, 130, 246, 0.8);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn:hover {
+            background: rgba(59, 130, 246, 1);
+            transform: translateY(-2px);
+        }
+
+        /* Gradient Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(30px);
+            animation: orbMove 20s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.4) 0%, transparent 70%);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .orb3 {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, transparent 70%);
+            top: 40%;
+            left: 70%;
+            animation-delay: 10s;
+        }
+
+        @keyframes orbMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.9); }
+            75% { transform: translate(-30px, -10px) scale(1.05); }
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(34, 197, 94, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="status">✅ 3D Animation Active</div>
+    
+    <div class="animated-background">
+        <!-- Gradient Orbs -->
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+        
+        <!-- 3D Cubes -->
+        <div class="cube cube1">
+            <div class="cube-face front">$</div>
+            <div class="cube-face back">€</div>
+            <div class="cube-face right">£</div>
+            <div class="cube-face left">¥</div>
+            <div class="cube-face top">₿</div>
+            <div class="cube-face bottom">₹</div>
+        </div>
+        
+        <div class="cube cube2">
+            <div class="cube-face front">📊</div>
+            <div class="cube-face back">📈</div>
+            <div class="cube-face right">💰</div>
+            <div class="cube-face left">🏦</div>
+            <div class="cube-face top">💳</div>
+            <div class="cube-face bottom">📉</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1 class="title">🤖 AI Financial Coach</h1>
+        <p class="subtitle">Experience Advanced 3D Financial Animation</p>
+        
+        <div class="glass-card">
+            <h2>🎬 3D Animation Features Active!</h2>
+            <p>✨ Animated gradient background</p>
+            <p>🎲 Rotating 3D cubes with financial symbols</p>
+            <p>🔮 Floating gradient orbs</p>
+            <p>✨ Dynamic particle system</p>
+            <p>💰 Floating golden coins</p>
+            <br>
+            <button class="btn" onclick="addMoreParticles()">🚀 Add More Particles</button>
+            <button class="btn" onclick="addCoins()">💰 Add Coins</button>
+        </div>
+    </div>
+
+    <script>
+        // Add floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.querySelector('.animated-background').appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 15000);
+        }
+
+        // Add floating coins
+        function createCoin() {
+            const coin = document.createElement('div');
+            coin.className = 'coin';
+            coin.textContent = '$';
+            coin.style.left = Math.random() * 100 + '%';
+            coin.style.animationDelay = Math.random() * 2 + 's';
+            coin.style.animationDuration = (Math.random() * 8 + 8) + 's';
+            document.querySelector('.animated-background').appendChild(coin);
+            
+            setTimeout(() => {
+                if (coin.parentNode) {
+                    coin.parentNode.removeChild(coin);
+                }
+            }, 12000);
+        }
+
+        function addMoreParticles() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => createParticle(), i * 100);
+            }
+        }
+
+        function addCoins() {
+            const symbols = ['$', '€', '£', '¥', '₿', '₹'];
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin';
+                    coin.textContent = symbols[Math.random() * symbols.length | 0];
+                    coin.style.left = Math.random() * 100 + '%';
+                    coin.style.animationDelay = (i * 0.2) + 's';
+                    document.querySelector('.animated-background').appendChild(coin);
+                    
+                    setTimeout(() => {
+                        if (coin.parentNode) {
+                            coin.parentNode.removeChild(coin);
+                        }
+                    }, 12000);
+                }, i * 200);
+            }
+        }
+
+        // Auto-create particles and coins
+        setInterval(createParticle, 2000);
+        setInterval(createCoin, 3000);
+
+        // Initial burst
+        setTimeout(() => {
+            addMoreParticles();
+            addCoins();
+        }, 1000);
+
+        // Show loading confirmation
+        console.log('🎉 3D Animation Demo Loaded Successfully!');
+        document.querySelector('.status').style.animation = 'titlePulse 2s ease-in-out infinite alternate';
+    </script>
+</body>
+</html>

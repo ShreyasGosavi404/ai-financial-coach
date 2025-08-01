@@ -1,0 +1,9 @@
+[core]
+    autocrlf = true
+    longpaths = true
+
+[push]
+    default = simple
+
+[pull]
+    rebase = false
