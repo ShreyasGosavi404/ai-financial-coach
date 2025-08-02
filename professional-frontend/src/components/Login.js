@@ -52,7 +52,7 @@ const FloatingElement = styled(Box)(({ size, delay }) => ({
   },
 }));
 
-const Login = ({ onLoginSuccess }) => {
+const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -82,7 +82,7 @@ const Login = ({ onLoginSuccess }) => {
         if (result.success) {
           setSuccess('Login successful!');
           setTimeout(() => {
-            onLoginSuccess();
+            onLogin(true);
           }, 1000);
         } else {
           setError(result.error);
