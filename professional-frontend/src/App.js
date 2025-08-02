@@ -5,6 +5,7 @@ import { Box, Typography, CircularProgress } from '@mui/material';
 
 // Import components
 import Login from './components/Login';
+import AnimatedBackground from './components/AnimatedBackground';
 import authService from './services/authService';
 
 // Import pages with error handling
@@ -149,17 +150,24 @@ function App() {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <AnimatedBackground />
         <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
           minHeight="100vh"
           sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
-          <Typography variant="h6" sx={{ color: 'white' }}>
-            Loading...
+          <Typography variant="h6" sx={{ 
+            color: 'white', 
+            textShadow: '0 0 20px rgba(255,255,255,0.8)',
+            fontSize: '1.5rem',
+            fontWeight: 'bold'
+          }}>
+            Loading AI Financial Coach...
           </Typography>
         </Box>
       </ThemeProvider>
@@ -169,6 +177,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <AnimatedBackground />
       {!isAuthenticated ? (
         <Login onLogin={handleLogin} />
       ) : (
