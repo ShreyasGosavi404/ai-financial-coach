@@ -14,7 +14,7 @@ import jwt
 import hashlib
 
 # Import AI service
-from backend.ai_service import ai_service
+from ai_service import ai_service
 
 app = FastAPI(
     title="AI Financial Coach API",
@@ -28,6 +28,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000", 
         "http://127.0.0.1:3000", 
+        "https://ai-financial-coach-1.onrender.com",
+        "https://*.onrender.com",
         "https://ai-financial-coach-frontend.vercel.app",
         "https://*.vercel.app",
         "*"  # Remove this in production and specify exact domains
