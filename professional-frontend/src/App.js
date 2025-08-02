@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Box, Typography, CircularProgress } from '@mui/material';
 
 // Import components
 import Login from './components/Login';
-import Layout from './components/Layout/Layout';
-import Dashboard from './pages/Dashboard';
-import FinancialAnalysis from './pages/FinancialAnalysis';
-import FinancialCoach from './pages/FinancialCoach';
-import Portfolio from './pages/Portfolio';
-import Reports from './pages/Reports';
 import authService from './services/authService';
+
+// Import pages with error handling
+let Dashboard, FinancialAnalysis, FinancialCoach, Portfolio, Reports, Layout;
+
+try {
+  Dashboard = require('./pages/Dashboard').default;
+  FinancialAnalysis = require('./pages/FinancialAnalysis').default;
+  FinancialCoach = require('./pages/FinancialCoach').default;
+  Portfolio = require('./pages/Portfolio').default;
+  Reports = require('./pages/Reports').default;
+  Layout = require('./components/Layout/Layout').default;
+} catch (error) {
+  console.error('Error loading components:', error);
+  // Fallback components
+  Dashboard = () => <Typography variant="h4">Dashboard Loading...</Typography>;
+  FinancialAnalysis = () => <Typography variant="h4">Financial Analysis Loading...</Typography>;
+  FinancialCoach = () => <Typography variant="h4">AI Coach Loading...</Typography>;
+  Portfolio = () => <Typography variant="h4">Portfolio Loading...</Typography>;
+  Reports = () => <Typography variant="h4">Reports Loading...</Typography>;
+  Layout = ({ children }) => <Box sx={{ p: 2 }}>{children}</Box>;
+}
 
 // Enhanced theme with better colors and typography
 const theme = createTheme({
@@ -134,29 +149,19 @@ function App() {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+          sx={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           }}
         >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            style={{
-              width: 50,
-              height: 50,
-              border: '3px solid rgba(255,255,255,0.3)',
-              borderTop: '3px solid white',
-              borderRadius: '50%',
-            }}
-          />
-        </motion.div>
+          <Typography variant="h6" sx={{ color: 'white' }}>
+            Loading...
+          </Typography>
+        </Box>
       </ThemeProvider>
     );
   }
@@ -164,40 +169,20 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <AnimatePresence mode="wait">
-          {!isAuthenticated ? (
-            <motion.div
-              key="login"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Login onLogin={handleLogin} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="dashboard"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Layout user={user} onLogout={handleLogout}>
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/analysis" element={<FinancialAnalysis />} />
-                  <Route path="/ai-coach" element={<FinancialCoach />} />
-                  <Route path="/portfolio" element={<Portfolio />} />
-                  <Route path="/reports" element={<Reports />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Layout>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </Router>
+      {!isAuthenticated ? (
+        <Login onLogin={handleLogin} />
+      ) : (
+        <Layout user={user} onLogout={handleLogout}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/analysis" element={<FinancialAnalysis />} />
+            <Route path="/ai-coach" element={<FinancialCoach />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      )}
     </ThemeProvider>
   );
 }
